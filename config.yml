@@ -4,18 +4,23 @@ meta:
   author: Mitchell J & Sam K
   git_repo: mitchell-johnstone/tabula
 units:
-  off: 2
-  # tl: [-0.5 cx - 0.5 off,  0.5 cy + 0.5 off]
-  # bl: [-0.5 cx - 0.5 off, -0.5 cy - 0.5 off]
-  # tr: [ 0.5 cx + 0.5 off,  0.5 cy + 0.5 off]
-  # br: [ 0.5 cx + 0.5 off, -0.5 cy - 0.5 off]
+  off: 1 #1mm offset for casing
+  up:    0.5cy + off
+  down: -0.5cy - off
+  left: -0.5cx - off
+  right: 0.5cx + off
+  # tl: [-0.5 cx - off,  0.5 cy + off]
+  # bl: [-0.5 cx - off, -0.5 cy - off]
+  # tr: [ 0.5 cx + off,  0.5 cy + off]
+  # br: [ 0.5 cx + off, -0.5 cy - off]
 points:
   zones:
     matrix:
       anchor:
-        rotate: 5
+        rotate: 10
       columns:
-        pinky:
+        outer:
+        pinky.key.splay: -5
         ring.key.splay: -5
         ring.key.stagger: 12
         middle.key.stagger: 5
@@ -43,7 +48,7 @@ points:
   rotate: 
   mirror: &mirror
     ref: matrix_pinky_home
-    distance: 255
+    distance: 300
 
 outlines:
   switches:
@@ -60,65 +65,50 @@ outlines:
   case_left:
     - what: polygon
       points:
-        - ref: matrix_pinky_nums
-          shift: [-0.5 cx - 0.5 off,  0.5 cy + 0.5 off] #tl
+        - ref: matrix_outer_nums
+          shift: [left,  up] #tl
         - ref: matrix_ring_nums
-          shift: [-0.5 cx - 0.5 off,  0.5 cy + 0.5 off] #tl
+          shift: [left,  up] #tl
         - ref: matrix_middle_nums
-          shift: [-0.5 cx - 0.5 off,  0.5 cy + 0.5 off] #tl
+          shift: [left,  up] #tl
         - ref: matrix_middle_nums
-          shift: [ 0.5 cx + 0.5 off,  0.5 cy + 0.5 off] #tr
+          shift: [right,  up] #tr
         - ref: matrix_index_nums
-          shift: [ 0.5 cx + 0.5 off,  0.5 cy + 0.5 off] #tr
+          shift: [right,  up] #tr
         - ref: matrix_inner_nums
-          shift: [ 0.5 cx + 0.5 off,  0.5 cy + 0.5 off] #tr
+          shift: [right,  up] #tr
         - ref: matrix_inner_nums
-          shift: [ 3.0 cx + 0.5 off,  0.5 cy + 0.5 off]
+          shift: [ 3.0 cx + off,  up]
         - ref: thumbfan_far_thumb
-          shift: [ 0.5 cx + 0.5 off,  0.5 cy + 0.5 off] #tr
+          shift: [right,  up] #tr
         - ref: thumbfan_far_thumb
-          shift: [ 0.5 cx + 0.5 off, -0.5 cy - 0.5 off] #br
+          shift: [right, down] #br
         - ref: thumbfan_far_thumb
-          shift: [-0.5 cx - 0.5 off, -0.5 cy - 0.5 off] #bl
+          shift: [left, down] #bl
         - ref: thumbfan_home_thumb
-          shift: [-0.5 cx - 0.5 off, -0.5 cy - 0.5 off] #bl
+          shift: [left, down] #bl
         - ref: thumbfan_near_thumb
-          shift: [-0.5 cx - 0.5 off, -0.5 cy - 0.5 off] #bl
+          shift: [left, down] #bl
+        - ref: matrix_index_bottom
+          shift: [right-off, down] #bl
+        - ref: matrix_ring_bottom
+          shift: [left+2off, down] #bl
         - ref: matrix_pinky_bottom
-          shift: [-0.5 cx - 0.5 off, -0.5 cy - 0.5 off] #bl
+          shift: [right, down] #bl
+        - ref: matrix_outer_bottom
+          shift: [left, down] #bl
   full_left:
     - name: case_left
     - operation: subtract
       name: keycaps
-  rounded_case_left:
-    - what: polygon
-      points:
-        - ref: matrix_pinky_nums
-        - ref: matrix_ring_nums
-        - ref: matrix_middle_nums
-        - ref: matrix_index_nums
-        - ref: matrix_inner_nums
-        - ref: matrix_inner_nums
-          shift: [ 3 cx, 0 ]
-        - ref: thumbfan_far_thumb
-        - ref: thumbfan_home_thumb
-        - ref: thumbfan_near_thumb
-        - ref: matrix_pinky_bottom
-      expand: 0.7 cx
-      joints: 0
-      fillet: 0
-  rounded_full_left:
-    - name: rounded_case_left
-    - operation: subtract
-      name: keycaps
 # cases:
-pcbs:
-  pcb_left:
-    outlines:
-      - outline: case_left
-    footprints:
-      - where: true
-        asym: both
-        what: mx
-        params:
-          - hotswap: true
+# pcbs:
+#   pcb_left:
+#     outlines:
+#       - outline: case_left
+#     footprints:
+#       - where: true
+#         asym: both
+#         what: mx
+#         params:
+#           - hotswap: true
