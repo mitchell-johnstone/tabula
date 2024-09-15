@@ -1,0 +1,32 @@
+{
+  "name": "tabula",
+  "version": "1.0.0",
+  "description": "My first iteration of a keyboard.",
+  "main": "index.js",
+  "scripts": {
+    "ergogen:build": "ergogen --clean -o ergogen/output ergogen",
+    "ergogen:watch": "nodemon --ext .js,.yaml --watch ergogen/footprints --watch ergogen/config.yml --exec npm run ergogen:build",
+    "zmk:update": "docker compose -f zmk/docker-compose.yml run --rm firmware-env zmk-update",
+    "zmk:build": "docker compose -f zmk/docker-compose.yml run --rm firmware-env zmk-build",
+    "zmk:down": "docker compose -f zmk/docker-compose.yml down"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mitchell-johnstone/tabula.git"
+  },
+  "keywords": [
+    "keyboard",
+    "ergogen",
+    "kicad"
+  ],
+  "author": "Mitchell Johnstone",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mitchell-johnstone/tabula/issues"
+  },
+  "homepage": "https://github.com/mitchell-johnstone/tabula#readme",
+  "dependencies": {
+    "ergogen": "^4.1.0",
+    "nodemon": "^3.1.4"
+  }
+}
