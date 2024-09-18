@@ -1,7 +1,7 @@
 meta:
-  engine: 4.0.2
+  engine: 4.1.0
   version: 1.0
-  author: Mitchell J & Sam K
+  author: Mitchell J, Sam K, and Autumn B
   git_repo: mitchell-johnstone/tabula
 units:
   off: 1 #1mm offset for casing
@@ -9,15 +9,12 @@ units:
   down: -0.5cy - off
   left: -0.5cx - off
   right: 0.5cx + off
-  # tl: [-0.5 cx - off,  0.5 cy + off]
-  # bl: [-0.5 cx - off, -0.5 cy - off]
-  # tr: [ 0.5 cx + off,  0.5 cy + off]
-  # br: [ 0.5 cx + off, -0.5 cy - off]
 points:
   zones:
     matrix:
       anchor:
         rotate: 10
+        shift: [100, -200]
       rows:
         bottom.row_net: P0
         home.row_net: P1
@@ -25,23 +22,23 @@ points:
         nums.row_net: P3
       columns:
         outer:
-          col_net: P4
+          # col_net: P4
         pinky:
-          col_net: P5
+          # col_net: P5
           key.splay: -5
         ring:
-          col_net: P6
+          # col_net: P6
           key:
             splay: -5
             stagger: 12
         middle:
-          col_net: P7
+          # col_net: P7
           key.stagger: 5
         index:
-          col_net: P8
+          # col_net: P8
           key.stagger: -6
         inner:
-          col_net: P9
+          # col_net: P9
           key.stagger: -2
     thumbfan:
       anchor:
@@ -57,10 +54,9 @@ points:
           origin: [-9.5, -9]
       rows:
         thumb:
-  rotate: 
-  mirror: &mirror
-    ref: matrix_pinky_home
-    distance: 300
+  #mirror: &mirror
+  #  ref: matrix_pinky_home
+  #  distance: 300
 
 outlines:
   switches:
@@ -74,7 +70,7 @@ outlines:
       asym: source
       size: [cx, cy] 
       corner: 1
-  case_left:
+  case:
     - what: polygon
       points:
         - ref: matrix_outer_nums
@@ -109,48 +105,103 @@ outlines:
           shift: [right, down] #bl
         - ref: matrix_outer_bottom
           shift: [left, down] #bl
-  full_left:
-    - name: case_left
+  full:
+    - name: case
     - operation: subtract
       name: keycaps
 # cases:
-# TODO: have not vetted below
+# TODO: have not vetted casing work
 pcbs.tablua:
+  template: kicad8 # Required, since footprints are KiCad 8 only
+  outlines.main.outline: case
   footprints:
-    led:
-      what: sk6812mini
-      where: true
-      adjust:
-        shift: [0, -5]
-      params:
-        din: "{{led_in}}"
-        dout: "{{led_out}}"
-        cutout: true
-    diode:
-      what: sod-123w
-      where: true
-      params:
-        from: "{{name}}"
-        to: "{{row_net}}"
-      adjust:
-        shift: [ -7.6, -1.6 ]
-        rotate: 90
-    choc:
+    choc_hotswap:
       what: choc
       where: true
       params:
         keycaps: true
-        reverse: true
+        reverse: false
         hotswap: true
-        from: "{{col_net}}"
-        to: "{{name}}"
-    promicro:
-      what: promicro_pretty
+        from: "{{column_net}}"
+        to: "{{colrow}}"
+    diode:
+      what: diode
+      where: true
+      params:
+        from: "{{colrow}}"
+        to: "{{row_net}}"
+      adjust.shift: [0,-5]
+    mcu:
+      what: ceoloide/mcu_nice_nano
       where:
-        ref: main_inner_home
-      adjust:
-        shift: [22, 6.5]
-        rotate: -90
+        ref: matrix_inner_bottom
+        shift: [2*right,up+2*off]
+    display:
+      what: ceoloide/display_nice_view
+      where:
+        ref: matrix_inner_bottom
+        shift: [2*right,up]
+    reset:
+      what: button
+      params:
+        from: GND
+        to: RST
+      where:
+        ref: matrix_inner_home
+        shift: [2*right-5*off,up+3*off]
+    # battery?
+    battery:
+      what: ceoloide/battery_connector_jst_ph_2
+      where:
+        ref: matrix_inner_home
+        shift: [2*right+2*off,up+3*off]
+        rotate: 90
+    on_switch:
+      what: slider
+      params:
+        from: BAT_P
+        to: VCC
+      where:
+        ref: matrix_inner_home
+        shift: [2*right+2*off,2*up+3*off]
+
+
+
+  #  led:
+  #    what: sk6812mini
+  #    where: true
+  #    adjust:
+  #      shift: [0, -5]
+  #    params:
+  #      din: "{{led_in}}"
+  #      dout: "{{led_out}}"
+  #      cutout: true
+  #  diode:
+  #    what: sod-123w
+  #    where: true
+  #    params:
+  #      from: "{{name}}"
+  #      to: "{{row_net}}"
+  #    adjust:
+  #      shift: [ -7.6, -1.6 ]
+  #      rotate: 90
+  #  choc:
+  #    what: choc
+  #    where: true
+  #    params:
+  #      keycaps: true
+  #      reverse: true
+  #      hotswap: true
+  #      from: "{{col_net}}"
+  #      to: "{{name}}"
+  #  promicro:
+  #    what: promicro_pretty
+  #    where:
+  #      ref: main_inner_home
+  #    adjust:
+  #      shift: [22, 6.5]
+  #      rotate: -90
+  #      #
 #   pcb_left:
 #     outlines:
 #       - outline: case_left
