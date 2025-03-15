@@ -16,47 +16,46 @@ points:
         rotate: 10
         shift: [100, -200]
       rows:
-        bottom.row_net: P0
-        home.row_net: P1
-        top.row_net: P2
-        nums.row_net: P3
+        bottom.row_net: R3
+        home.row_net: R2
+        top.row_net: R1
+        nums.row_net: R0
       columns:
-        outer:
-          # col_net: P4
+        outer.key.col_net: C0
         pinky:
-          # col_net: P5
+          key.col_net: C1
           key.splay: -5
         ring:
-          # col_net: P6
+          key.col_net: C2
           key:
             splay: -5
             stagger: 12
         middle:
-          # col_net: P7
+          key.col_net: C3
           key.stagger: 5
         index:
-          # col_net: P8
+          key.col_net: C4
           key.stagger: -6
         inner:
-          # col_net: P9
+          key.col_net: C5
           key.stagger: -2
     thumbfan:
       anchor:
         ref: matrix_inner_bottom
         shift: [0, -19]
       columns:
-        near:
+        near.key.col_net: C5
         home.key:
+          col_net: C6
           splay: -15
           origin: [-11.75, -9]
         far.key:
+          col_net: C7
           splay: -15
           origin: [-9.5, -9]
       rows:
         thumb:
-  #mirror: &mirror
-  #  ref: matrix_pinky_home
-  #  distance: 300
+          row_net: R4
 
 outlines:
   switches:
@@ -74,44 +73,47 @@ outlines:
     - what: polygon
       points:
         - ref: matrix_outer_nums
-          shift: [left,  up] #tl
+          shift: [left,  up]
         - ref: matrix_ring_nums
-          shift: [left,  up] #tl
+          shift: [left,  up]
         - ref: matrix_middle_nums
-          shift: [left,  up] #tl
+          shift: [left,  up]
         - ref: matrix_middle_nums
-          shift: [right,  up] #tr
+          shift: [right,  up]
         - ref: matrix_index_nums
-          shift: [right,  up] #tr
+          shift: [right,  up]
         - ref: matrix_inner_nums
-          shift: [right,  up] #tr
+          shift: [right,  up]
         - ref: matrix_inner_nums
           shift: [ 3.0 cx + off,  up]
         - ref: thumbfan_far_thumb
-          shift: [right,  up] #tr
+          shift: [right,  up]
         - ref: thumbfan_far_thumb
-          shift: [right, down] #br
+          shift: [right, down]
         - ref: thumbfan_far_thumb
-          shift: [left, down] #bl
+          shift: [left, down]
         - ref: thumbfan_home_thumb
-          shift: [left, down] #bl
+          shift: [left, down]
         - ref: thumbfan_near_thumb
-          shift: [left, down] #bl
+          shift: [left, down]
         - ref: matrix_index_bottom
-          shift: [right-off, down] #bl
+          shift: [right-off, down]
         - ref: matrix_ring_bottom
-          shift: [left+2off, down] #bl
+          shift: [left+2off, down]
         - ref: matrix_pinky_bottom
-          shift: [right, down] #bl
+          shift: [right, down]
         - ref: matrix_outer_bottom
-          shift: [left, down] #bl
+          shift: [left, down]
+      fillet: 0
   full:
     - name: case
     - operation: subtract
       name: keycaps
+ 
 # cases:
 # TODO: have not vetted casing work
-pcbs.tablua:
+
+pcbs.tabula:
   template: kicad8 # Required, since footprints are KiCad 8 only
   outlines.main.outline: case
   footprints:
@@ -120,9 +122,9 @@ pcbs.tablua:
       where: true
       params:
         keycaps: true
-        reverse: false
+        reverse: true
         hotswap: true
-        from: "{{column_net}}"
+        from: "{{col_net}}"
         to: "{{colrow}}"
     diode:
       what: diode
@@ -135,35 +137,72 @@ pcbs.tablua:
       what: ceoloide/mcu_nice_nano
       where:
         ref: matrix_inner_bottom
-        shift: [2*right,up+2*off]
+        shift: [3*right,2*up+2*off]
+      params:
+        #P0: DAT
+        #P1: LED
+        P21: C7
+        P20: C6
+        P19: C5
+        P18: R4
+        P15: R3
+        P14: R2
+        P0: R0
+        P1: R1
+        P2: SDA
+        P3: SCL
+        P6: C4
+        P7: C3
+        P8: C2
+        P9: C1
+        P10: C0
+        reversible: true
+        include_traces: true
+        show_silk_labels: true
+        show_via_labels: true
+        show_instructions: true
+        # use_rectangular_jumpers: true
     display:
       what: ceoloide/display_nice_view
       where:
         ref: matrix_inner_bottom
-        shift: [2*right,up]
-    reset:
-      what: button
+        shift: [3*right,2*up]
+      params:
+        MOSI: SDA
+        SCK: SCL
+        reversible: true
+        include_labels: false
+        invert_jumpers_position: true
+    reset_switch:
+      what: ceoloide/reset_switch_smd_side #button
       params:
         from: GND
         to: RST
+        reversible: true
+        include_bosses: true
       where:
         ref: matrix_inner_home
-        shift: [2*right-5*off,up+3*off]
-    # battery?
-    battery:
-      what: ceoloide/battery_connector_jst_ph_2
-      where:
-        ref: matrix_inner_home
-        shift: [2*right+2*off,up+3*off]
-        rotate: 90
-    on_switch:
-      what: slider
+        shift: [3*right-5*off,2*up+3]
+    power_switch:
+      what: ceoloide/power_switch_smd_side #slider
       params:
         from: BAT_P
-        to: VCC
+        to: RAW
+        reversible: true
       where:
         ref: matrix_inner_home
-        shift: [2*right+2*off,2*up+3*off]
+        shift: [3*right+2,3*up+3]
+    battery:
+      what: ceoloide/battery_connector_jst_ph_2
+      params:
+        BAT_P: BAT_P
+        BAT_N: GND
+        reversible: true
+        include_courtyard: false
+      where:
+        ref: matrix_inner_home
+        shift: [3*right+2,2*up+3]
+        rotate: 90
 
 
 
